@@ -19,12 +19,7 @@ table = dynamodb.Table(table_name)
 s3 = boto3.resource('s3')
 bucket_name = "pythonapicpt3"
 
-
-#Get date for reference
-yday = date.today() - timedelta(days = 1)
-yday_str = yday.strftime("%m-%d-%Y")
-
-def make_combo_graph (all_data_frame, frame_trends) :
+def make_combo_graph (all_data_frame, frame_trends, yday_str) :
 
     x = all_data_frame['Date']
     y = all_data_frame['Tweet Volume']
@@ -63,14 +58,14 @@ def make_combo_graph (all_data_frame, frame_trends) :
     
     save_picture_name = f'{location}_{yday_str}_All.png'
     lambda_path = '/tmp/' + save_picture_name
-    bucket_path = f'charts/{location}_Trends/{save_picture_name}'
+    bucket_path = f'Site Test/images/{location}_Trends/{save_picture_name}'
     plt.savefig(lambda_path)
 
     s3.Bucket(bucket_name).upload_file(Filename=lambda_path,Key=bucket_path)
 
     plt.close()
 
-def make_solo_graph (data_frame, trend_name, frame_trends, index) :
+def make_solo_graph (data_frame, trend_name, frame_trends, index, yday_str) :
 
     x = data_frame['Date']
     y = data_frame['Tweet Volume']
@@ -98,7 +93,7 @@ def make_solo_graph (data_frame, trend_name, frame_trends, index) :
     
     save_picture_name = f'{location}_{yday_str}_{index}.png'
     lambda_path = '/tmp/' + save_picture_name
-    bucket_path = f'charts/{location}_Trends/{save_picture_name}'
+    bucket_path = f'Site Test/images/{location}_Trends/{save_picture_name}'
     plt.savefig(lambda_path)
 
     s3.Bucket(bucket_name).upload_file(Filename=lambda_path,Key=bucket_path)
@@ -106,6 +101,9 @@ def make_solo_graph (data_frame, trend_name, frame_trends, index) :
     plt.close()
 
 def lambda_handler(event, context) :
+
+    #set-date, date is passed from the lambda function call
+    yday_str = event['date_str']
 
     #get data
     response = table.scan(FilterExpression=Attr('TimeStamp').begins_with(yday_str))
@@ -165,9 +163,9 @@ def lambda_handler(event, context) :
     for i in single_data_list :
         single_data_frame.append(DataFrame(i,columns=['Trend','Date','Tweet Volume']))
 
-    make_combo_graph(all_data_frame, trends)
+    make_combo_graph(all_data_frame, trends, yday_str)
 
     index = 1
     for i in single_data_frame :
-        make_solo_graph(i,i['Trend'][0], trends,index)
+        make_solo_graph(i, i['Trend'][0], trends, index, yday_str)
         index += 1

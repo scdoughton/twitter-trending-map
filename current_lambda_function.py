@@ -63,7 +63,7 @@ def make_combo_graph (all_data_frame, frame_trends) :
         
     save_picture_name = f'{location}_Current_All.png'
     lambda_path = '/tmp/' + save_picture_name
-    bucket_path = f'charts/{location}_Trends/{save_picture_name}'
+    bucket_path = f'Site Test/images/{location}_Trends/{save_picture_name}'
     plt.savefig(lambda_path)
 
     s3.Bucket(bucket_name).upload_file(Filename=lambda_path,Key=bucket_path)
@@ -98,7 +98,7 @@ def make_solo_graph (data_frame, trend_name, frame_trends, index) :
     
     save_picture_name = f'{location}_Current_{index}.png'
     lambda_path = '/tmp/' + save_picture_name
-    bucket_path = f'charts/{location}_Trends/{save_picture_name}'
+    bucket_path = f'Site Test/images/{location}_Trends/{save_picture_name}'
     plt.savefig(lambda_path)
 
     s3.Bucket(bucket_name).upload_file(Filename=lambda_path,Key=bucket_path)
