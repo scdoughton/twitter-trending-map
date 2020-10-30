@@ -1,0 +1,676 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Resources": {
+		"SrcS3Bucket": {
+			"Type": "AWS::S3::Bucket",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AccessControl": "PublicRead",
+				"BucketName": "pythonapicpt3cf",
+				"WebsiteConfiguration": {
+					"IndexDocument": "index.html"
+				}
+			}
+		},
+		"Top50DCTBL": {
+			"Type": "AWS::DynamoDB::Table",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "Trend_Name",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "Trend_Name",
+						"KeyType": "HASH"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"KeyType": "RANGE"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": "Top_50_Trends_DC_CF"
+			}
+		},
+		"Top50LATBL": {
+			"Type": "AWS::DynamoDB::Table",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "Trend_Name",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "Trend_Name",
+						"KeyType": "HASH"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"KeyType": "RANGE"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": "Top_50_Trends_LA_CF"
+			}
+		},
+		"Top50NYCTBL": {
+			"Type": "AWS::DynamoDB::Table",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "Trend_Name",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "Trend_Name",
+						"KeyType": "HASH"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"KeyType": "RANGE"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": "Top_50_Trends_NYC_CF"
+			}
+		},
+		"Top50LondonTBL": {
+			"Type": "AWS::DynamoDB::Table",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "Trend_Name",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "Trend_Name",
+						"KeyType": "HASH"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"KeyType": "RANGE"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": "Top_50_Trends_London_CF"
+			}
+		},
+		"Top50MelbourneTBL": {
+			"Type": "AWS::DynamoDB::Table",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "Trend_Name",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "Trend_Name",
+						"KeyType": "HASH"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"KeyType": "RANGE"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": "Top_50_Trends_Melbourne_CF"
+			}
+		},
+		"Top50GlobalTBL": {
+			"Type": "AWS::DynamoDB::Table",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "Trend_Name",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "Trend_Name",
+						"KeyType": "HASH"
+					},
+					{
+						"AttributeName": "TimeStamp",
+						"KeyType": "RANGE"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": "Top_50_Trends_Global_CF"
+			}
+		},
+		"DDBLambdaDCLoader": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "GetTop50TrendsDC.zip"
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "GetTop50TrendsDC_CF"
+			}
+		},
+		"DDBLambdaLALoader": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "GetTop50TrendsLA.zip"
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "GetTop50TrendsLA_CF"
+			}
+		},
+		"DDBLambdaNYCLoader": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "GetTop50TrendsNYC.zip"
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "GetTop50TrendsNYC_CF"
+			}
+		},
+		"DDBLambdaLondonLoader": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "GetTop50TrendsLondon.zip"
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "GetTop50TrendsLondon_CF"
+			}
+		},
+		"DDBLambdaMelbourneLoader": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "GetTop50TrendsMelbourne.zip"
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "GetTop50TrendsMelbourne_CF"
+			}
+		},
+		"DDBLambdaGlobalLoader": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "getTop50GlobalTrends.zip"
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "GetTop50GlobalTrends_CF"
+			}
+		},
+		"LACurrentData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/CurrentCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "LA"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getLACurrentData_CF"
+			}
+		},
+		"DCCurrentData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/CurrentCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "DC"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getDCCurrentData_CF"
+			}
+		},
+		"NYCCurrentData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/CurrentCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "NYC"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getNYCCurrentData_CF"
+			}
+		},
+		"MelbourneCurrentData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/CurrentCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "Melbourne"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getMelbourneCurrentData_CF"
+			}
+		},
+		"LondonCurrentData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/CurrentCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "London"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getLondonCurrentData_CF"
+			}
+		},
+		"GlobalCurrentData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/CurrentCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "Global"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getGlobalCurrentData_CF"
+			}
+		},
+		"LAYesterdayData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/YesterdayCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "LA"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getLADataFromYesterday_CF"
+			}
+		},
+		"DCYesterdayData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/YesterdayCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "DC"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getDCDataFromYesterday_CF"
+			}
+		},
+		"NYCYesterdayData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/YesterdayCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "NYC"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getNYCDataFromYesterday_CF"
+			}
+		},
+		"MelbourneYesterdayData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/YesterdayCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "Melbourne"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getMelbourneDataFromYesterday_CF"
+			}
+		},
+		"LondonYesterdayData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/YesterdayCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "London"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getLondonDataFromYesterday_CF"
+			}
+		},
+		"GlobalYesterdayData": {
+			"Type": "AWS::Lambda::Function",
+			"DeletionPolicy": "Delete",
+			"Properties": {
+				"Role": {
+					"Fn::GetAtt": [
+						"DynamoLambdaRole",
+						"Arn"
+					]
+				},
+				"Code": {
+					"S3Bucket": "pythonapicpt3",
+					"S3Key": "lambda/YesterdayCharts.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"LOCATION": "Global"
+					}
+				},
+				"Handler": "lambda_function.lambda_handler",
+				"Runtime": "python3.8",
+				"Timeout": "60",
+				"FunctionName": "getGlobalDataFromYesterday_CF"
+			}
+		},
+		"DynamoLambdaRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": [
+									"lambda.amazonaws.com"
+								]
+							},
+							"Action": [
+								"sts:AssumeRole"
+							]
+						}
+					]
+				},
+				"Path": "/",
+				"Policies": [
+					{
+						"PolicyName": "root",
+						"PolicyDocument": {
+							"Version": "2012-10-17",
+							"Statement": [
+								{
+									"Effect": "Allow",
+									"Action": [
+										"logs: CreateLogGroup",
+										"logs: CreateLogStream",
+										"logs: PutLogEvents"
+									],
+									"Resource": "arn:aws:logs:*:*:*"
+								},
+								{
+									"Effect": "Allow",
+									"Action": [
+										"dynamodb:BatchGetItem",
+										"dynamodb:GetItem",
+										"dynamodb:Query",
+										"dynamodb:Scan",
+										"dynamodb:BatchWriteItem",
+										"dynamodb:PutItem",
+										"dynamodb:UpdateItem"
+									],
+									"Resource": "arn:aws:dynamodb:*:*:*"
+								}
+							]
+						}
+					}
+				]
+			}
+		}
+	}
+}
